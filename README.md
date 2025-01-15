@@ -129,7 +129,7 @@ npm install -g expo-cli
    Once you have the API key, create a `.env` file in the root of the project and add the following:
 
    ```
-   REACT_APP_TMDB_API_KEY=your_api_key_here
+   TMDB_API_KEY=your_tmdb_api_key_here
    ```
 
 4. **Running the App**
@@ -137,7 +137,7 @@ npm install -g expo-cli
    After setting up everything, start the app using Expo:
 
    ```bash
-   expo start
+   npx expo start
    ```
 
    This will start the development server. You can then open the app in the Expo Go app on your mobile device or use an Android/iOS simulator.
