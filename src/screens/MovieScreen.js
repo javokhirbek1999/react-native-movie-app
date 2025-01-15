@@ -1,5 +1,16 @@
-import React, { useEffect, useState } from 'react'; 
-import { View, Text, ScrollView, SafeAreaView, TouchableOpacity, Dimensions, Image, Platform, StyleSheet } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import {
+  View,
+  Text,
+  ScrollView,
+  SafeAreaView,
+  TouchableOpacity,
+  Dimensions,
+  Image,
+  Platform,
+  StyleSheet,
+} from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { ChevronLeftIcon } from 'react-native-heroicons/outline';
 import { HeartIcon } from 'react-native-heroicons/solid';
@@ -26,6 +37,7 @@ const MovieScreen = () => {
     getMovieDetails(item.id);
     getMovieCredits(item.id);
     getSimilarMovies(item.id);
+    loadFavoriteStatus(item.id); // Load favorite status on mount
   }, [item]);
 
   const getMovieDetails = async (id) => {
@@ -44,90 +56,103 @@ const MovieScreen = () => {
     if (data?.results) setSimilarMovies(data.results);
   };
 
+  const toggleFavorite = async () => {
+    try {
+      const currentFavorites = await AsyncStorage.getItem('LikedMovies');
+      const favorites = currentFavorites ? JSON.parse(currentFavorites) : {};
+      if (isFavorite) {
+        // Remove from favorites
+        delete favorites[item.id];
+      } else {
+        // Add to favorites
+        favorites[item.id] = movie;
+      }
+      await AsyncStorage.setItem('LikedMovies', JSON.stringify(favorites));
+      setIsFavorite(!isFavorite);
+    } catch (error) {
+      console.error('Error toggling favorite:', error);
+    }
+  };
+  
+  const loadFavoriteStatus = async (id) => {
+    try {
+      const currentFavorites = await AsyncStorage.getItem('LikedMovies');
+      const favorites = currentFavorites ? JSON.parse(currentFavorites) : {};
+      setIsFavorite(!!favorites[id]);
+    } catch (error) {
+      console.error('Error loading favorite status:', error);
+    }
+  };
+  
+
   return (
-    <View style={styles.screenContainer}>
-      <ScrollView contentContainerStyle={styles.scrollContainer}>
-        {/* Back button and movie poster */}
-        <View style={styles.container}>
-          <SafeAreaView style={[styles.safeArea, !ios && { marginTop: 10 }]}>
-            <TouchableOpacity
-              style={styles.backButton}
-              onPress={() => navigation.goBack()}
-            >
-              <ChevronLeftIcon size={28} strokeWidth={2.5} color="white" />
-            </TouchableOpacity>
+    <ScrollView contentContainerStyle={styles.scrollContainer}>
+      <View style={styles.container}>
+        <SafeAreaView style={[styles.safeArea, !ios && { marginTop: 10 }]}>
+          <TouchableOpacity
+            style={styles.backButton}
+            onPress={() => navigation.goBack()}
+          >
+            <ChevronLeftIcon size={28} strokeWidth={2.5} color="white" />
+          </TouchableOpacity>
 
-            <TouchableOpacity onPress={() => setIsFavorite(!isFavorite)}>
-              <HeartIcon size={35} color={isFavorite ? '#FF6347' : 'white'} />
-            </TouchableOpacity>
-          </SafeAreaView>
+          <TouchableOpacity onPress={toggleFavorite}>
+            <HeartIcon size={35} color={isFavorite ? '#FF6347' : 'white'} />
+          </TouchableOpacity>
+        </SafeAreaView>
 
-          {loading ? (
-            <Loading />
-          ) : (
-            <View>
-              <Image
-                source={{ uri: image500(movie?.poster_path) }}
-                style={{ width, height: height * 0.6 }}
-              />
-              {/* Stronger gradient at the bottom */}
-              <LinearGradient
-                colors={['rgba(28, 28, 28, 0)', 'rgba(28, 28, 28, 1)']}  // Using #1c1c1c color for the gradient
-                style={{
-                  width,
-                  height: 200,  // Increased the gradient height for a smoother transition
-                  position: 'absolute',
-                  bottom: 0,
-                }}
-              />
+        {loading ? (
+          <Loading />
+        ) : (
+          <View>
+            <Image
+              source={{ uri: image500(movie?.poster_path) }}
+              style={{ width, height: height * 0.6 }}
+            />
+            <LinearGradient
+              colors={['rgba(28, 28, 28, 0)', 'rgba(28, 28, 28, 1)']}
+              style={{
+                width,
+                height: 200,
+                position: 'absolute',
+                bottom: 0,
+              }}
+            />
+          </View>
+        )}
+
+        {movie?.title && (
+          <View style={styles.detailsContainer}>
+            <Text style={styles.movieTitle}>{movie?.title}</Text>
+            <Text style={styles.statusText}>
+              {movie?.status} · {movie?.release_date?.split('-')[0]} · {movie?.runtime} min
+            </Text>
+
+            <View style={styles.genresContainer}>
+              {movie?.genres?.map((genre, index) => {
+                const showDot = index + 1 !== movie.genres.length;
+                return (
+                  <Text key={index} style={styles.genreText}>
+                    {genre?.name} {showDot ? '·' : null}
+                  </Text>
+                );
+              })}
             </View>
-          )}
 
-          {/* Movie details */}
-          {movie?.title && (
-            <View style={styles.detailsContainer}>
-              <Text style={styles.movieTitle}>{movie?.title}</Text>
-
-              {/* Status, release, duration */}
-              <Text style={styles.statusText}>
-                {movie?.status} · {movie?.release_date?.split('-')[0]} · {movie?.runtime} min
-              </Text>
-
-              {/* Genres */}
-              <View style={styles.genresContainer}>
-                {movie?.genres?.map((genre, index) => {
-                  const showDot = index + 1 !== movie.genres.length;
-                  return (
-                    <Text key={index} style={styles.genreText}>
-                      {genre?.name} {showDot ? '·' : null}
-                    </Text>
-                  );
-                })}
-              </View>
-
-              {/* Description */}
-              <Text style={styles.overviewText}>{movie?.overview}</Text>
-
-              {/* Cast */}
-              <Cast navigation={navigation} cast={cast} />
-
-              {/* Similar movies */}
-              <MovieList title="Similar Movies" seeAll={false} data={similarMovies} />
-            </View>
-          )}
-        </View>
-      </ScrollView>
-    </View>
+            <Text style={styles.overviewText}>{movie?.overview}</Text>
+            <Cast navigation={navigation} cast={cast} />
+            <MovieList title="Similar Movies" seeAll={false} data={similarMovies} />
+          </View>
+        )}
+      </View>
+    </ScrollView>
   );
 };
 
 const styles = StyleSheet.create({
-  screenContainer: {
-    flex: 1,
-    backgroundColor: '#1c1c1c', // Updated screen background color to match the ScrollView
-  },
   scrollContainer: {
     paddingBottom: 20,
+    backgroundColor: '#1c1c1c',
   },
   container: {
     width: '100%',

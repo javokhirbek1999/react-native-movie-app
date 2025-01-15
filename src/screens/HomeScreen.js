@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, SafeAreaView, Platform, TouchableOpacity, ScrollView, StyleSheet, Animated } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
-import { Bars3CenterLeftIcon, MagnifyingGlassIcon } from 'react-native-heroicons/outline';
+import { Bars3CenterLeftIcon, MagnifyingGlassIcon, XMarkIcon } from 'react-native-heroicons/outline';
 import TrendingMovies from '../components/TrendingMovies';
 import MovieList from '../components/MovieList';
 import Loading from '../components/Loading';
 import { fetchTopRatedMovies, fetchTrendingMovies, fetchUpcomingMovies } from '../api/moviesdb';
 import { useNavigation } from '@react-navigation/native';
+
 
 const ios = Platform.OS === 'ios';
 
@@ -53,7 +54,7 @@ const HomeScreen = () => {
 
     // Animate the dropdown menu
     Animated.timing(menuHeight, {
-      toValue: menuVisible ? 0 : 200, // Adjust the height as needed
+      toValue: menuVisible ? 0 : 100, // Adjust the height as needed
       duration: 300,
       useNativeDriver: false,
     }).start();
@@ -65,7 +66,11 @@ const HomeScreen = () => {
         <StatusBar style="light" />
         <View style={styles.headerContainer}>
           <TouchableOpacity onPress={toggleMenu}>
-            <Bars3CenterLeftIcon size={32} color="white" />
+            {menuVisible ? (
+                <XMarkIcon size={30} color="white" />
+            ) : (
+                <Bars3CenterLeftIcon size={32} color="white" />
+            )}
           </TouchableOpacity>
           <Text style={styles.headerTitle}>
             <Text style={styles.highlightedText}>M</Text>ovies
@@ -84,9 +89,6 @@ const HomeScreen = () => {
           </TouchableOpacity>
           <TouchableOpacity onPress={() => navigation.navigate('LikedActors')} style={styles.menuItem}>
             <Text style={styles.menuText}>Liked Actors</Text>
-          </TouchableOpacity>
-          <TouchableOpacity onPress={() => navigation.navigate('Settings')} style={styles.menuItem}>
-            <Text style={styles.menuText}>Settings</Text>
           </TouchableOpacity>
         </Animated.View>
       )}
