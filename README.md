@@ -16,11 +16,6 @@ A mobile application built using **React Native** that allows users to explore m
 
 ## Screenshots
 
-![Home Screen](./assets/DemoScreens/HomeScreen.jpg)  
-*Home Screen showing the app's main menu.*
-<br/>
-<br/>
-<br/>
 
 ![Movie Details Screen](./assets/DemoScreens/MovieDetailScreen.jpg)  
 *Movie Details showing detailed information about a specific movie and you can also like the movie.*
