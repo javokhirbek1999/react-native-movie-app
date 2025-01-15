@@ -184,36 +184,36 @@ return (
                 }}
             >
                 <View style={{ alignItems: 'center' }}>
-                <Text style={{ color: 'white', fontWeight: '600' }}>
-                    Gender
-                </Text>
-                <Text style={{ color: '#A9A9A9', fontSize: 14 }}>
-                    {person?.gender === 2 ? 'Male' : 'Female'}
-                </Text>
+                    <Text style={{ color: 'white', fontWeight: '600' }}>
+                        Gender
+                    </Text>
+                    <Text style={{ color: '#A9A9A9', fontSize: 14 }}>
+                        {person?.gender === 2 ? 'Male' : 'Female'}
+                    </Text>
                 </View>
                 <View style={{ alignItems: 'center' }}>
-                <Text style={{ color: 'white', fontWeight: '600' }}>
-                    Birthday
-                </Text>
-                <Text style={{ color: '#A9A9A9', fontSize: 14 }}>
-                    {person?.birthday}
-                </Text>
+                    <Text style={{ color: 'white', fontWeight: '600' }}>
+                        Birthday
+                    </Text>
+                    <Text style={{ color: '#A9A9A9', fontSize: 14 }}>
+                        {person?.birthday}
+                    </Text>
                 </View>
                 <View style={{ alignItems: 'center' }}>
-                <Text style={{ color: 'white', fontWeight: '600' }}>
-                    Known for
-                </Text>
-                <Text style={{ color: '#A9A9A9', fontSize: 14 }}>
-                    {person?.known_for_department}
-                </Text>
+                    <Text style={{ color: 'white', fontWeight: '600' }}>
+                        Known for
+                    </Text>
+                    <Text style={{ color: '#A9A9A9', fontSize: 14 }}>
+                        {person?.known_for_department}
+                    </Text>
                 </View>
                 <View style={{ alignItems: 'center' }}>
-                <Text style={{ color: 'white', fontWeight: '600' }}>
-                    Popularity
-                </Text>
-                <Text style={{ color: '#A9A9A9', fontSize: 14 }}>
-                    {person?.popularity}
-                </Text>
+                    <Text style={{ color: 'white', fontWeight: '600' }}>
+                        Popularity
+                    </Text>
+                    <Text style={{ color: '#A9A9A9', fontSize: 14 }}>
+                        {person?.popularity}
+                    </Text>
                 </View>
             </View>
             </View>

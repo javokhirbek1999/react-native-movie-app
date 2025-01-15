@@ -8,21 +8,21 @@ const { width, height } = Dimensions.get('window');
 const TrendingMovies = ({ data }) => {
   const [currentIndex, setCurrentIndex] = useState(0); // Start from the first movie
   const navigation = useNavigation();
-  const flatListRef = useRef(null); // Create a ref for FlatList to access scroll methods
+  const flatListRef = useRef(null); // Initialzing a ref for FlatList to access scroll methods
 
-  // Function to handle movie click
+
   const handleClick = (item) => {
     navigation.navigate('Movie', item); // Navigate to movie details page
   };
 
-  // Autoplay the FlatList by changing the index every few seconds
+  // Autoplay the FlatList by changing the index every specified seconds
   useEffect(() => {
     // Prevent setting interval if no data
     if (data.length === 0) return;
 
     const interval = setInterval(() => {
       setCurrentIndex((prevIndex) => {
-        const nextIndex = (prevIndex + 1) % data.length; // Loop back to the first movie
+        const nextIndex = (prevIndex + 1) % data.length; // Loop back to the first movie without going out of index
         flatListRef.current.scrollToIndex({ index: nextIndex, animated: true }); // Scroll to the next movie
         return nextIndex;
       });
@@ -60,7 +60,7 @@ const TrendingMovies = ({ data }) => {
         snapToAlignment="center" // Ensure the current item is centered
         decelerationRate="fast" // Smooth scrolling
         contentContainerStyle={styles.listContainer}
-        extraData={currentIndex} // To force re-render on currentIndex change
+        extraData={currentIndex} // triggers re-render on currentIndex change
       />
     </View>
   );
