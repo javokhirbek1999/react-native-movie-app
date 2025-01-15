@@ -7,7 +7,7 @@ import MovieList from '../components/MovieList';
 import Loading from '../components/Loading';
 import { fetchTopRatedMovies, fetchTrendingMovies, fetchUpcomingMovies } from '../api/moviesdb';
 import { useNavigation } from '@react-navigation/native';
-
+import * as Location from 'expo-location';
 
 const ios = Platform.OS === 'ios';
 
@@ -17,13 +17,21 @@ const HomeScreen = () => {
   const [topRated, setTopRated] = useState([]);
   const [loading, setLoading] = useState(true);
   const [menuVisible, setMenuVisible] = useState(false);
-  const [menuHeight] = useState(new Animated.Value(0)); // For animation
+  const [menuHeight] = useState(new Animated.Value(0));
+  const [countryName, setCountryName] = useState(''); // Store the country name
 
   const navigation = useNavigation();
 
   useEffect(() => {
     const fetchData = async () => {
       try {
+        let { status } = await Location.requestForegroundPermissionsAsync();
+        if (status === 'granted') {
+          const location = await Location.getCurrentPositionAsync({});
+          const country = await Location.reverseGeocodeAsync(location.coords);
+          setCountryName(country[0]?.country || 'Your Country'); // Set country name
+        }
+
         const [trendingData, upcomingData, topRatedData] = await Promise.all([
           fetchTrendingMovies(),
           fetchUpcomingMovies(),
@@ -51,10 +59,8 @@ const HomeScreen = () => {
 
   const toggleMenu = () => {
     setMenuVisible(!menuVisible);
-
-    // Animate the dropdown menu
     Animated.timing(menuHeight, {
-      toValue: menuVisible ? 0 : 100, // Adjust the height as needed
+      toValue: menuVisible ? 0 : 100,
       duration: 300,
       useNativeDriver: false,
     }).start();
@@ -67,9 +73,9 @@ const HomeScreen = () => {
         <View style={styles.headerContainer}>
           <TouchableOpacity onPress={toggleMenu}>
             {menuVisible ? (
-                <XMarkIcon size={30} color="white" />
+              <XMarkIcon size={30} color="white" />
             ) : (
-                <Bars3CenterLeftIcon size={32} color="white" />
+              <Bars3CenterLeftIcon size={32} color="white" />
             )}
           </TouchableOpacity>
           <Text style={styles.headerTitle}>
@@ -81,7 +87,6 @@ const HomeScreen = () => {
         </View>
       </SafeAreaView>
 
-      {/* Dropdown Menu with animation */}
       {menuVisible && (
         <Animated.View style={[styles.menu, { height: menuHeight }]}>
           <TouchableOpacity onPress={() => navigation.navigate('LikedMovies')} style={styles.menuItem}>
@@ -96,11 +101,8 @@ const HomeScreen = () => {
       {loading ? (
         <Loading />
       ) : (
-        <ScrollView
-          showsVerticalScrollIndicator={false}
-          contentContainerStyle={styles.scrollContainer}
-        >
-          {trending.length > 0 && <TrendingMovies data={trending} />}
+        <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.scrollContainer}>
+          {trending.length > 0 && <TrendingMovies data={trending} countryName={countryName} />}
           {upcoming.length > 0 && <MovieList title="Upcoming" data={upcoming} />}
           {topRated.length > 0 && <MovieList title="Top Rated" data={topRated} />}
         </ScrollView>
@@ -134,13 +136,13 @@ const styles = StyleSheet.create({
     paddingBottom: 20,
   },
   menu: {
-    backgroundColor: '#222', // Darker background for the menu
+    backgroundColor: '#222',
     borderTopWidth: 1,
     borderTopColor: '#444',
     overflow: 'hidden',
     paddingHorizontal: 20,
     marginTop: 10,
-    borderRadius: 10, // Rounded corners
+    borderRadius: 10,
     shadowColor: 'black',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.2,

@@ -83,12 +83,11 @@ const MovieScreen = () => {
       console.error('Error loading favorite status:', error);
     }
   };
-  
 
   return (
     <ScrollView contentContainerStyle={styles.scrollContainer}>
       <View style={styles.container}>
-        <SafeAreaView style={[styles.safeArea, !ios && { marginTop: 10 }]}>
+        <SafeAreaView style={[styles.safeArea, !ios && { marginTop: 10 }]} >
           <TouchableOpacity
             style={styles.backButton}
             onPress={() => navigation.goBack()}
@@ -152,10 +151,11 @@ const MovieScreen = () => {
 const styles = StyleSheet.create({
   scrollContainer: {
     paddingBottom: 20,
-    backgroundColor: '#1c1c1c',
+    backgroundColor: '#1c1c1c', // Ensure scroll view has the same background color
   },
   container: {
     width: '100%',
+    backgroundColor: '#1c1c1c', // Ensure container has the same background color as scroll view
   },
   safeArea: {
     position: 'absolute',

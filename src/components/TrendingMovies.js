@@ -5,11 +5,10 @@ import { image500 } from '../api/moviesdb';
 
 const { width, height } = Dimensions.get('window');
 
-const TrendingMovies = ({ data }) => {
+const TrendingMovies = ({ data, countryName }) => {
   const [currentIndex, setCurrentIndex] = useState(0); // Start from the first movie
   const navigation = useNavigation();
   const flatListRef = useRef(null); // Initialzing a ref for FlatList to access scroll methods
-
 
   const handleClick = (item) => {
     navigation.navigate('Movie', item); // Navigate to movie details page
@@ -43,24 +42,23 @@ const TrendingMovies = ({ data }) => {
   // Render the FlatList to display movies
   return (
     <View style={styles.container}>
-      <Text style={styles.heading}>Trending</Text>
+      <Text style={styles.heading}>
+        Trending in {countryName || 'Your Country'} {/* Fallback text if countryName is null */}
+      </Text>
       <FlatList
-        ref={flatListRef} // Attach the ref to FlatList
+        ref={flatListRef}
         data={data}
         renderItem={({ item, index }) => (
-          <MovieCard
-            item={item}
-            handleClick={handleClick}
-          />
+          <MovieCard item={item} handleClick={handleClick} />
         )}
         keyExtractor={(item) => item.id.toString()}
         horizontal
         showsHorizontalScrollIndicator={false}
-        snapToInterval={width * 0.6} // Snaps to item width
-        snapToAlignment="center" // Ensure the current item is centered
-        decelerationRate="fast" // Smooth scrolling
+        snapToInterval={width * 0.6}
+        snapToAlignment="center"
+        decelerationRate="fast"
         contentContainerStyle={styles.listContainer}
-        extraData={currentIndex} // triggers re-render on currentIndex change
+        extraData={currentIndex}
       />
     </View>
   );
@@ -89,25 +87,25 @@ const styles = StyleSheet.create({
     fontSize: 24,
     color: 'white',
     fontWeight: 'bold',
-    marginBottom: 20, // Increased space below heading
-    marginLeft: 20, // Ensure consistent left margin
+    marginBottom: 20,
+    marginLeft: 20,
   },
   card: {
     width: width * 0.6,
     height: height * 0.4,
-    borderRadius: 20, // Rounded corners for the image
+    borderRadius: 20,
     overflow: 'hidden',
-    marginRight: 20, // Add space between cards
-    marginBottom: 10, // Space between cards vertically
+    marginRight: 20,
+    marginBottom: 10,
   },
   image: {
     width: '100%',
     height: '100%',
-    borderRadius: 20, // Rounded corners for the image
+    borderRadius: 20,
   },
   listContainer: {
-    paddingLeft: 20, // Ensure there is space at the beginning of the list
-    paddingRight: 20, // Ensure space at the end of the list
+    paddingLeft: 20,
+    paddingRight: 20,
   },
 });
 

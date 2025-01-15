@@ -1,6 +1,5 @@
 import axios from "axios";
-
-import {TMDB_API_KEY} from '@env'
+import { TMDB_API_KEY } from '@env'
 
 const API_KEY = TMDB_API_KEY
 
@@ -42,16 +41,28 @@ const apiCall = async (endpoint, params) => {
     }
 };
 
-export const fetchTrendingMovies = () => {
-    return apiCall(trendingMoviesEndpoint);
+// Fetch trending movies with optional country code
+export const fetchTrendingMovies = (countryCode) => {
+    const url = countryCode
+        ? `${API_BASE_URL}/trending/movie/day?api_key=${API_KEY}&region=${countryCode}`
+        : trendingMoviesEndpoint;
+    return apiCall(url);
 };
 
-export const fetchUpcomingMovies = () => {
-    return apiCall(upcomingMovieEndpoint);
+// Fetch upcoming movies with optional country code
+export const fetchUpcomingMovies = (countryCode) => {
+    const url = countryCode
+        ? `${API_BASE_URL}/movie/upcoming?api_key=${API_KEY}&region=${countryCode}`
+        : upcomingMovieEndpoint;
+    return apiCall(url);
 };
 
-export const fetchTopRatedMovies = () => {
-    return apiCall(topRatedMoviesEndpoint);
+// Fetch top-rated movies with optional country code
+export const fetchTopRatedMovies = (countryCode) => {
+    const url = countryCode
+        ? `${API_BASE_URL}/movie/top_rated?api_key=${API_KEY}&region=${countryCode}`
+        : topRatedMoviesEndpoint;
+    return apiCall(url);
 };
 
 export const fetchMovieDetails = id => {
