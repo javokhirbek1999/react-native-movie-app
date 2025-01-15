@@ -7,6 +7,7 @@ A mobile application built using **React Native** that allows users to explore m
 
 - **Search Movies**: Users can search for any movie by title.
 - **Movie Categories**: View trending movies, upcoming movies, and top-rated movies.
+- **Location Access**: Accesses the location of the user's device to show trending movies in the user's location
 - **Movie Details**: View detailed information about each movie, including title, genre, release date, runtime, and more.
 - **Like Movies**: Users can like movies and add them to their "Liked Movies" list.
 - **Like Actors**: Users can like actors and add them to their "Liked Actors" list.
