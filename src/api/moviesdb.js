@@ -1,7 +1,8 @@
 import axios from "axios";
-// import { API_KEY } from "../constants";
 
-API_KEY = '6440e16e7fb31a4f5dca3f62985b85b8'
+import {TMDB_API_KEY} from '@env'
+
+const API_KEY = TMDB_API_KEY
 
 // Endpoints
 const API_BASE_URL = 'https://api.themoviedb.org/3';
